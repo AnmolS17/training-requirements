@@ -9,11 +9,14 @@ A2: my_folder/ ls->"hello_world.txt".
 
 Q3. What is the output of each ls command?   
 
-A3: 1. For my_folder/ ls -> no output;\s\s 2. For my_folder2/ ls-> "hello_world.txt".   
+A3: 1. For my_folder/ ls -> no output;  
+    2. For my_folder2/ ls-> "hello_world.txt".   
 
 Q4. What is the output of each?   
 
-A4: 1. For my_folder/ ls -> no output;\s\s 1. For my_folder2/ ls -> no output;\s\s 3. For my_folder3/ ls-> "hello_world.txt".
+A4: 1. For my_folder/ ls -> no output;  
+    2. For my_folder2/ ls -> no output;  
+    3. For my_folder3/ ls-> "hello_world.txt".
 
 Q5. Why didn't that work?   
 
@@ -28,7 +31,6 @@ Q6. What was the solution?
 A6. By creating an ".ssh" directory in the sudouser. Then adding a key-pair(private key) to it.   
 
    Steps:    
-   
     1. su - sudouser   
     
     2. mkdir .ssh -> chmod 700 .ssh/; # create .ssh directory -> change its permissions.   
@@ -45,7 +47,7 @@ A6. By creating an ".ssh" directory in the sudouser. Then adding a key-pair(priv
     
    Reference:   
      [2FA and SSH](https://aws.amazon.com/blogs/startups/securing-ssh-to-amazon-ec2-linux-hosts/) -> This consist of how how to manage the users, i.e. the commands and steps used to add key-pair for the sudouser. This also consists of adding 2FA for your EC2 instance.   
-   
+     
     [2FA from security group option](https://aws.amazon.com/blogs/security/how-to-enable-mfa-protection-on-your-aws-api-calls/) -> To add 2FA from security group options.   
     
     [New User accounts](https://aws.amazon.com/premiumsupport/knowledge-center/new-user-accounts-linux-instance/)  
