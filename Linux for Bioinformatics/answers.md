@@ -77,7 +77,7 @@ Q15. What is **|** doing?
 A15. It allows the stdout(output) of a command to be connected to stdin(input) of another. This means, that the output of the zcat command is taken in as input by the head command.  
 
 Q16. What format are the downloaded sequencing reads in?
-A16. The file was downloaded in **SRR074122/** directory. The file name was **SRR074122.sra**. **.sra** stands for **Sequence Read Archeive**.  
+A16. The file was downloaded in **SRR074122/** directory. The file name was **SRR074122.sra**. **".sra"** stands for **Sequence Read Archeive**.  
 
 Q17. What is the total size of the disk?  
 A17. 9.7 GB  
@@ -86,10 +86,10 @@ Q18. How much space is remaining on the disk?
 A18. 4.4 GB  
 
 Q19. What went wrong?
-A19. The system storage got exhausted during the conversion of **.sra** to **.fastq**.  
+A19. The system storage got exhausted during the conversion of **".sra"** to **".fastq"**.  
 
 Q20: What was your solution?  
 A20: First, delete the incomplete .fastq file by rm command.  
-Secondly, the solution is to compress the output file, here there are two options, gzip and bzip2. I choose to use **Gzip**, i.e. **.gz**. Final Command : **fastq-dump --gzip SRR074122**
+Secondly, the solution is to compress the output file, here there are two options, gzip and bzip2. I choose to use **Gzip**, i.e. **".gz"**. Final Command : **fastq-dump --gzip SRR074122**
 
     
