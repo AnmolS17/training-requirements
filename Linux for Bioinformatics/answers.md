@@ -44,7 +44,7 @@ A6. By creating an ".ssh" directory in the sudouser. Then adding a key-pair(priv
     [2FA from security group option](https://aws.amazon.com/blogs/security/how-to-enable-mfa-protection-on-your-aws-api-calls/) -> To add 2FA from security group options.   
     [Adding new User accounts](https://aws.amazon.com/premiumsupport/knowledge-center/new-user-accounts-linux-instance/)   
     
-Q7. Q7. what does the **sudo docker run** part of the command do? and what does the **salmon swim** part of the command do?  
+Q7. what does the **sudo docker run** part of the command do? and what does the **salmon swim** part of the command do?  
 
 A7. **sudo docker run** : **sudo** to provide the previledge to run the command as root user/ super user;  
 **docker run** command first creates a writable container layer over the specified image(here "combinelab/salmon"),  and then starts it using the specified command.  
@@ -54,14 +54,15 @@ A7. **sudo docker run** : **sudo** to provide the previledge to run the command 
 Q8. What is the output of this command?  
 A8. **sudo ls /root** -> Ask password -> "serveruser is not in the sudoers file.  This incident will be reported."  
 
-Q9. Q9. what does **-c bioconda** do?  
+Q9. what does **-c bioconda** do?  
 A9. **-c** command is used to specify the channel used for installing the package( here "salmon").  
 **bioconda** [Bioconda](https://bioconda.github.io/) is a channel for the conda package manager specializing in bioinformatics software.  
 
 Q10. What does the **-o athal.ga.gz** part of the command do?  
 A10. It writes the output of the "curl ftp://ftp.ensemblgenomes.org/.../Arabidopsis_thaliana.TAIR10.28.cdna.all.fa.gz" into "athal.ga.gz" file.  
 
-Q11. What is a **.gz** file?
+Q11. What is a **.gz** file?  
+
 A11. **.gz** extension in a file signifies that it is an archeive compressed using Gzip compression technology.  
 
 Q12. What does the **zcat** command do?  
@@ -76,7 +77,8 @@ A14. The number 100 signifies that the first 100 lines of the given input is to 
 Q15. What is **|** doing?  
 A15. It allows the stdout(output) of a command to be connected to stdin(input) of another. This means, that the output of the zcat command is taken in as input by the head command.  
 
-Q16. What format are the downloaded sequencing reads in?
+Q16. What format are the downloaded sequencing reads in?  
+
 A16. The file was downloaded in **SRR074122/** directory. The file name was **SRR074122.sra**. **".sra"** stands for **Sequence Read Archeive**.  
 
 Q17. What is the total size of the disk?  
@@ -85,7 +87,8 @@ A17. 9.7 GB
 Q18. How much space is remaining on the disk?  
 A18. 4.4 GB  
 
-Q19. What went wrong?
+Q19. What went wrong?  
+
 A19. The system storage got exhausted during the conversion of **".sra"** to **".fastq"**.  
 
 Q20: What was your solution?  
