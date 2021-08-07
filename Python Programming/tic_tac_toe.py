@@ -271,15 +271,7 @@ for i in range(9):
     bi=0
     win, winner=checkwin()
     if win:
-        print("{} won!!\n".format(winner))
-        if winner== human:
-            board()
-            print("This time you won {}, you won't be lucky next time.".format(playername))
-            break
-        else:
-            board()
-            print("Know your place human, I am a superior being.")
-            break
+        break
     elif human=='X' and i%2==0:
         marking()
     elif human=='O' and i%2!=0:
