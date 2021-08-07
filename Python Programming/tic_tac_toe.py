@@ -110,38 +110,56 @@ def checkwin():
 
 #for cpu to read the board, compare values, ck represents a board with numbers which add up to 15 [8,3,4,1,5,9,6,7,2] represents [0,1,2,3,4,5,6,7,8] positions in vertical, horizontal or diognals,
 #checks if human or cpu can win in the next move, returns the positions to play for cpu in such condition. 
-def cpucheck():
+# there are 2 functions for this because of a bug.
+def cpucheckh():
     check=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[6,4,2]]
     ck=[[8,3,4],[1,5,9],[6,7,2],[8,1,6],[3,5,7],[4,9,2],[8,5,2],[6,5,4]]
     hs=0
-    cs=0
     for x in range(8):
         h=0
         kh=0
-        c=0
-        kc=0
         for y in range(3):
             if bval[check[x][y]]== human:
                 h=h+1
                 kh=ck[x][y]+kh
             elif bval[check[x][y]]== cpu:
-                c=c+1
-                kc=ck[x][y]+kc
+                break
             else:
-                continue
-        if h==2 or c==2:
+                continue 
+        if h==2:
             hs=15-kh
-            cs=15-kc
-            return h,hs,c,cs
+            return h,hs
         else:
             continue
-    return h,hs,c,cs
+    return h,hs
+def cpucheckc():
+    check=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[6,4,2]]
+    ck=[[8,3,4],[1,5,9],[6,7,2],[8,1,6],[3,5,7],[4,9,2],[8,5,2],[6,5,4]]
+    cs=0
+    for x in range(8):
+        c=0
+        kc=0
+        for y in range(3):
+            if bval[check[x][y]]== cpu:
+                c=c+1
+                kc=ck[x][y]+kc
+            elif bval[check[x][y]]== human:
+                break
+            else:
+                continue 
+        if c==2:
+            cs=15-kc
+            return c,cs
+        else:
+            continue
+    return c,cs
 
 #function for cpu to mark it's fav position
 def cpumarking(term,a,b):
     print("\nMy move\n")
     indexs=[8,3,4,1,5,9,6,7,2]
-    h,hs,c,cs=cpucheck()
+    h,hs=cpucheckh()
+    c,cs=cpucheckc()
     a=0
     b=0
     if c==2:
