@@ -220,7 +220,7 @@ def cpu35(a):
         for c in range(4):
             for b in range(2):
                 if bval[arr[c][b]]!=human and bval[arr[c][b]]!= cpu:
-                    bval[arr[a][b]]=cpu
+                    bval[arr[c][b]]=cpu
                     return c,b
                 else:
                     continue
