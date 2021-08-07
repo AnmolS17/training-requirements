@@ -100,13 +100,12 @@ def checkwin():
                     x=x+1
                 else:
                     break
-            if x==3 and win==False:
+            if x==3 :
                 win=True
                 winner= play
-                break
+                return win, winner
             else:
                 continue
-       
     return win, winner
 
 #for cpu to read the board, compare values, ck represents a board with numbers which add up to 15 [8,3,4,1,5,9,6,7,2] represents [0,1,2,3,4,5,6,7,8] positions in vertical, horizontal or diognals,
@@ -173,11 +172,11 @@ def cpumarking(term,a,b):
     elif term==2:
         a,b=cpu2(a)
     elif term==3 or term==5:
-        a,b=cpu35()
+        a,b=cpu35(a)
     elif term==4:
-        a=cpu4()
+        a=cpu4(a)
     elif term==6:
-        a,b=cpu6()
+        a,b=cpu6(a,b)
     else:
         a= cpurand()
     board()
