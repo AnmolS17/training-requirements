@@ -99,7 +99,7 @@ def checkwin():
                 if bval[block]==play:
                     x=x+1
                 else:
-                    break
+                    continue
             if x==3 :
                 win=True
                 winner= play
@@ -286,7 +286,15 @@ for i in range(9):
         marking()
     else:
         ai,bi=cpumarking(i,ai,bi)
-
+win,winner=checkwin()
+if win:
+        print("{} won!!\n".format(winner))
+        if winner== human:
+            board()
+            print("This time you won {}, you won't be lucky next time.".format(playername))
+        else:
+            board()
+            print("Know your place human, I am a superior being.")
 # for the draw
 if win==False and i==8:
     print("It is a draw. You were a worthy challenger {}".format(playername))
