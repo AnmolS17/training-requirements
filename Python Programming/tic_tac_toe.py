@@ -150,20 +150,13 @@ def cpumarking(term,a,b):
             bval[index]=cpu
             board()
             return a,b
-        else:
-            a,b=cpurand()
-            board()
-            return a,b
     elif h==2:
         index= indexs.index(hs)
         if bval[index]!= human and bval[index]!= cpu:
             bval[index]=cpu
             board()
             return a,b
-        else:
-            a,b=cpurand()
-            board()
-            return a,b
+
 # even term for X ,odd for O
     if term==0 or term==7:
         a=cpu07()
