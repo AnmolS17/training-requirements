@@ -123,6 +123,7 @@ def cpucheckh():
                 h=h+1
                 kh=ck[x][y]+kh
             elif bval[check[x][y]]== cpu:
+                h=0
                 break
             else:
                 continue 
@@ -131,7 +132,7 @@ def cpucheckh():
             return h,hs
         else:
             continue
-    return h,hs
+    return 0,0
 def cpucheckc():
     check=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[6,4,2]]
     ck=[[8,3,4],[1,5,9],[6,7,2],[8,1,6],[3,5,7],[4,9,2],[8,5,2],[6,5,4]]
@@ -144,6 +145,7 @@ def cpucheckc():
                 c=c+1
                 kc=ck[x][y]+kc
             elif bval[check[x][y]]== human:
+                c=0
                 break
             else:
                 continue 
