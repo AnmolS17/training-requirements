@@ -162,8 +162,6 @@ def cpumarking(term,a,b):
     indexs=[8,3,4,1,5,9,6,7,2]
     h,hs=cpucheckh()
     c,cs=cpucheckc()
-    a=0
-    b=0
     if c==2:
         index= indexs.index(cs)
         if bval[index]!= human and bval[index]!= cpu:
@@ -279,9 +277,9 @@ def cpurand():
             continue
 
 #loop to play the game, marking() and cpumarking(), check for winner at start of each loop
+ai=0
+bi=0
 for i in range(9):
-    ai=0
-    bi=0
     win, winner=checkwin()
     if win:
         break
