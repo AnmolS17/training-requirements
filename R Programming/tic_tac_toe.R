@@ -305,9 +305,9 @@ cpu7<- function(a,b){
 
 # a function to mark randomly if the conditions are not fav for cpu
 cpurand<- function(){
-  arr<- sample(1:100, 5, replace=FALSE)
+  arr<- sample(1:9, 9, replace=FALSE)
   for(x in arr){
-    if (bval[x]!=  human & bval[x]!=  cpu){
+    if (bval[x]!= human & bval[x]!= cpu){
       bval[x]<<- cpu
       return (c(1,1))
     }else next
