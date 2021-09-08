@@ -80,7 +80,8 @@ marking<- function(){
                     warning= function(w){
                       FALSE
                     })
-      if(move==FALSE){
+     
+      if(move==FALSE| is.na(move) ){
         cat("\nWrong Input!!! Try Again \n")
       }else if(is.numeric(move)){
         if (move>=1 & move<10){
