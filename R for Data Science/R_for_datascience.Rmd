@@ -1,0 +1,335 @@
+---
+title: "R for Datascience: Studying Gapminder Dataset"
+author: "Anmol Singh"
+---
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE) 
+```
+  
+**Packages used:**
+```{r}
+library(tidyverse)
+library(rstatix)
+library(MVN)
+library(plotly)
+```
+
+#### Q1: Read in the `gapminder_clean.csv` data as a `tibble` using `read_csv`.
+
+```{r}
+gapminder <- read_csv("gapminder_clean.csv", col_types = '_') 
+gapminder %>% 
+  print(n = 5)
+``` 
+We can see that the data contains various demographics to study and compare the growth of many countries from `1962` to `2007`.
+
+#### Q2: Filter the data to include only rows where `Year` is `1962` and then make a scatter plot comparing `'CO2 emissions (metric tons per capita)'` and `gdpPercap` for the filtered data.  
+
+Here we are using log scale for both axes to provide a detailed insight between `'CO2 emissions (metric tons per capita)'` and `gdpPercap`.
+
+```{r, fig.height = 5, fig.width = 10}
+gapminder %>% 
+  filter(Year == 1962) %>%
+  select(`CO2 emissions (metric tons per capita)`, `gdpPercap`) %>% 
+  drop_na() %>% 
+  ggplot(aes(x = `gdpPercap`,
+             y = `CO2 emissions (metric tons per capita)`)) +
+  ggtitle("CO2 emissions (metric tons per capita) vs GDP per capita") +
+  xlab("GDP per capita") +
+  ylab("CO2 emissions (metric tons per capita)") +
+  geom_point() +
+  scale_y_continuous(trans = 'log10') +
+  scale_x_continuous(trans = 'log10')
+```
+
+As we can see from the scatter plot that there is positive correlation between `'CO2 emissions (metric tons per capita)'` and `gdpPercap`.
+
+#### Q3: On the filtered data, calculate the Pearson correlation of `'CO2 emissions (metric tons per capita)'` and `gdpPercap`. What is the Pearson R value and associated p value?  
+
+First we will use a `Q-Q Plot` and statistical tests to see if the data we are using satisfies the [assumptions for Pearson correlation](https://statistics.laerd.com/spss-tutorials/pearsons-product-moment-correlation-using-spss-statistics.php).
+
+```{r, fig.height = 4, fig.width = 8}
+gapminder %>% 
+  filter(`Year` == 1962) %>%
+  drop_na(`CO2 emissions (metric tons per capita)`) %>% 
+  ggplot(aes(sample = `CO2 emissions (metric tons per capita)`)) +
+  stat_qq() + stat_qq_line() +
+  ggtitle("Q-Q Plot: CO2 emissions (metric tons per capita), Year = 1962") +
+  xlab("Theoretical Quantiles") + ylab("Sample Quantiles")
+
+gapminder %>% 
+  filter(`Year` == 1962) %>%
+  drop_na(`gdpPercap`) %>% 
+  ggplot(aes(sample = `gdpPercap`)) +
+  stat_qq() + stat_qq_line() +
+  ggtitle("Q-Q Plot: GDP per Capita, Year = 1962") +
+  xlab("Theoretical Quantiles") + ylab("Sample Quantiles")
+```
+```{r,fig.height = 6, fig.width = 10}
+# normality tests: 
+gapminder %>% 
+  filter(Year == 1962) %>% 
+  dplyr::select("CO2 emissions (metric tons per capita)", "gdpPercap") %>% 
+  drop_na() %>% 
+  mvn(desc = F, mvnTest = "hz", univariateTest = "SW",
+      alpha = 0.05, multivariateOutlierMethod = "adj")
+```
+
+According to the result of [Shapiro-Wilk Univariate Normality test and Henze-Zirkler Multivariate Normality test](https://cran.r-project.org/web/packages/MVN/MVN.pdf) and the `Q-Q Plots`, there is enough evidence to show that the data is neither univariate nor multivariate since both `MVN` and `Normality` is `NO` for the tests. Also, we can see in the `Adjusted Chi-Square Q-Q Plot` based on Mahalanobis distance that there are many outliers in the data. Thus we failed to satisfy the assumptions required for Pearson correlation.
+
+As the question explicitly asks for Pearson's correlation, the results of both Pearson's correlation and Spearman's rank correlation are included.
+
+The assumptions for [Spearman's rank correlation](https://statistics.laerd.com/spss-tutorials/spearmans-rank-order-correlation-using-spss-statistics.php) are satisfied, that is: variables are in ordinal, interval or ratio scale, two variables represent paired observations and there is monotonic relationship between `"CO2 emissions (metric tons per capita)"` and `"gdpPercap"`(this is shown in the scatter plot in `Q2`).
+
+```{r}
+correlation <- gapminder %>% 
+  filter(Year == 1962)
+print('Year: 1962')
+# Pearson's product-moment correlation
+cor.test(correlation$`CO2 emissions (metric tons per capita)`,
+         correlation$gdpPercap, method = "pearson")
+# Spearman's rank correlation
+cor.test(correlation$`CO2 emissions (metric tons per capita)`,
+         correlation$gdpPercap, method = "spearman")
+```
+
+As we can see for `Spearman's rank correlation` the `rho`(`0.853`) > `0`, this means there is a positive correlation and `p-value`(`< 2.2e-16`) < `0.05` meaning that the correlation is statistically significant. The `Pearson's correlation` is also positive(`cor` = `0.926`) and is statistically significant(`p-value`(`2.2e-16`) < `0.05`).
+
+#### Q4: On the unfiltered data, answer "In what year is the correlation between `'CO2 emissions (metric tons per capita)'` and `'gdpPercap'` the strongest?" Filter the dataset to that year for the next step.
+
+```{r}
+years <- unname(unlist(gapminder %>% distinct(Year)))
+
+spearmans_year <- function(year){
+ spearman <- gapminder %>% 
+    filter(Year == year)
+ test <- cor.test(spearman$`CO2 emissions (metric tons per capita)`,
+                  spearman$gdpPercap, method = "spearman")
+ return(test$estimate)
+}
+
+correlation <- lapply(years, spearmans_year)
+correlation_df <- as_tibble(cbind(Year = years, Rho = unlist(correlation)))
+rownames(correlation_df) <- NULL
+correlation_df <- correlation_df[order(correlation_df$Rho, decreasing = TRUE), ]
+correlation_df %>% 
+  print(n = 5)
+year_high_corr = unlist(correlation_df[1,1])
+print(paste("The correlation between 'CO2 emissions (metric tons per capita)'",
+            "and 'gdpPercap' is the strongest in", year_high_corr))
+
+highest_corr <- gapminder %>%
+                  filter(Year == year_high_corr)
+highest_corr %>% 
+  print(n = 5)
+
+```
+
+#### Q5:Using plotly, create an interactive scatter plot comparing `'CO2 emissions (metric tons per capita)'` and `gdpPercap`, where the point size is determined by `pop` (population) and the color is determined by the `continent`. You can easily convert any `ggplot` plot to a `plotly` plot using the `ggplotly()` command.
+
+```{r, fig.height=6, fig.width=10}
+co2_gdp <- highest_corr %>% 
+  select(`CO2 emissions (metric tons per capita)`, gdpPercap, 
+         continent, pop, `Country Name`) %>% 
+  drop_na() %>% 
+  ggplot(aes(x = `gdpPercap`,
+             y = `CO2 emissions (metric tons per capita)`, 
+             size = pop, colour = continent, hoverlabel = `Country Name`)) +
+  geom_point(alpha = 0.5) +
+  scale_size(range = c(.1, 24)) +
+  xlab("GDP per capita") +
+  ggtitle("CO2 emissions (metric tons per capita) vs GDP per capita") +
+  scale_y_continuous(trans = 'log10') +
+  scale_x_continuous(trans = 'log10')
+ggplotly(co2_gdp)
+```
+
+#### Q6: What is the relationship between `continent` and `'Energy use (kg of oil equivalent per capita)'`? (Stats test needed)
+
+Let us first see graphically what is the relationship between `continent` and `'Energy use (kg of oil equivalent per capita)'`. Then we will conduct the statistical tests.
+
+```{r, fig.height=6, fig.width=10}
+
+box_plot <- gapminder %>%
+  select(`continent`, `Energy use (kg of oil equivalent per capita)`,
+         `Country Name`, Year) %>%
+  drop_na() %>% 
+  ggplot(aes(x = continent,
+             y = `Energy use (kg of oil equivalent per capita)`, 
+             hovername = `Country Name`,
+             frame = Year)) +
+  geom_boxplot() +
+  geom_jitter(width = 0.1, alpha = 0.5, colour = "brown") +
+  xlab("Continents") +
+  ylab("Energy use (kg of oil equivalent per capita)") +
+  ggtitle("Energy use (kg of oil equivalent per capita) vs Continents") +
+  scale_y_continuous(trans = 'log10', limits = c(9, 15000)) 
+ggplotly(box_plot)
+
+```
+
+Before moving forward, let us make sure if the data follows parametric assumptions. To check the distribution, we can use `Quantile-Quantile Plots (QQ-plots)`.
+
+```{r}
+
+gapminder %>% 
+  filter(`Year` == 2007, continent == "Asia") %>%
+  drop_na(`Energy use (kg of oil equivalent per capita)`) %>% 
+  ggplot(aes(sample = `Energy use (kg of oil equivalent per capita)`)) +
+  stat_qq() + stat_qq_line() +
+  ggtitle("Q-Q Plot: Asia: Energy use (kg of oil equivalent per capita),
+          Year = 2007") +
+  xlab("Theoretical Quantiles") + ylab("Sample Quantiles")
+
+gapminder %>% 
+  filter(`Year` == 2007, continent == "Europe") %>%
+  drop_na(`Energy use (kg of oil equivalent per capita)`) %>% 
+  ggplot(aes(sample = `Energy use (kg of oil equivalent per capita)`)) +
+  stat_qq() + stat_qq_line() +
+  ggtitle("Q-Q Plot: Asia: Energy use (kg of oil equivalent per capita), 
+          Year = 2007") +
+  xlab("Theoretical Quantiles") + ylab("Sample Quantiles")
+
+```
+
+As we can see the data is not normally distributed for every continent across the years, thus we cannot use parametric tests(example: one-way ANOVA). So, to show the statistical relation between `continent` and `'Energy use (kg of oil equivalent per capita)'` we will use the [Kruskal-Wallis Test](https://rpkgs.datanovia.com/rstatix/reference/kruskal_test.html) which is a non-parametric test.
+
+```{r}
+kruskal <- function(year){
+  krusk_wallis <- gapminder %>% 
+    filter(Year == year) %>%
+    select(`Energy use (kg of oil equivalent per capita)`, continent) %>% 
+    drop_na(`Energy use (kg of oil equivalent per capita)`, continent) %>% 
+    kruskal_test(`Energy use (kg of oil equivalent per capita)` ~ continent)
+  krusk_wallis <- cbind(Year = year, krusk_wallis,
+                        signif_p_val = krusk_wallis$p < 0.05) %>% 
+    select(-.y.)
+}
+kruskal_wall <- lapply(years, kruskal)
+kruskal_wall <- as_tibble(do.call(rbind, kruskal_wall))
+kruskal_wall <- rename(kruskal_wall, degree_of_freedom = df,
+                       p_value = p,  sample_count = n)
+kruskal_wall
+```
+
+It can be observed that excluding the years `1962` and `1967`, the `p-value` < `0.05`. Also, `degree_of_freedom` = `3` for `1962` and `1967` as `Africa` has only `NaN` values for year `1962` and `1967`. In conclusion, there is a significant relationship between `continents` and `Energy use (kg of oil equivalent per capita)` for years `1972` to `2007`. It is suggested to do a post hoc test to determine detailed relationship between groups. We will conduct [Dunn's Test](https://rdrr.io/cran/rstatix/man/dunn_test.html) for the same using the `Bonferonni correction`(multiple testing correction) for the `p-values`.
+
+```{r}
+dunn <- function(year){
+  dunns <- gapminder %>% 
+    filter(Year == year) %>%
+    select(`Energy use (kg of oil equivalent per capita)`, continent) %>%
+    drop_na(`Energy use (kg of oil equivalent per capita)`, continent) %>% 
+    dunn_test(`Energy use (kg of oil equivalent per capita)` ~ continent, 
+              p.adjust.method = "bonferroni")
+  dunn <- cbind(Year = year, dunns) %>% 
+    select(-.y.)
+}
+
+dunns_test <- lapply(years[years > 1967], dunn) 
+dunns_test <- as_tibble(do.call(rbind, dunns_test))
+dunns_test <- dunns_test %>% 
+  mutate(p.adj.signif = (p.adj.signif != 'ns'))
+dunns_test <- rename(dunns_test, p_value = p, p_adj = p.adj, 
+                     signif_p_adj = p.adj.signif)
+dunns_test %>% 
+  print(n = 5)
+
+# But we are mainly interested where there is a statistically significant relationship between groups
+dunns_test %>% 
+  filter(signif_p_adj == T) %>% 
+  print(n = 5)
+
+```
+As we can clearly see that for groups where `signif_p_adj` is `TRUE`, there is a significant relationship between the groups(`continent`). 
+Example: `Africa` and `Europe` in `1972`, `Americas` and `Europe` in `1982`.
+
+### Q7: Is there a significant difference between `Europe` and `Asia` with respect to `'Imports of goods and services (% of GDP)'` in the years after `1990`? (Stats test needed)
+
+To check the distribution of `'Imports of goods and services (% of GDP)'` for `Europe` and `Asia`, we can use `Quantile-Quantile Plots (Q-Q plots)`.
+
+```{r}
+gapminder %>% 
+  filter(`Year` == 1992, continent == "Asia") %>%
+  drop_na(`Imports of goods and services (% of GDP)`) %>% 
+  ggplot(aes(sample = `Imports of goods and services (% of GDP)`)) +
+  stat_qq() + stat_qq_line() +
+  ggtitle("Q-Q Plot: Asia: Imports of goods and services (% of GDP),
+          Year = 2007") +
+  xlab("Theoretical Quantiles") + ylab("Sample Quantiles")
+
+gapminder %>% 
+  filter(`Year` == 1992, continent == "Europe") %>%
+  drop_na(`Imports of goods and services (% of GDP)`) %>% 
+  ggplot(aes(sample = `Imports of goods and services (% of GDP)`)) +
+  stat_qq() + stat_qq_line() +
+  ggtitle("Q-Q Plot: Asia: Imports of goods and services (% of GDP),
+          Year = 2007") +
+  xlab("Theoretical Quantiles") + ylab("Sample Quantiles")
+
+```
+
+As we can observe from the `Q-Q plots` that there are outliers in the data and the data is not normally distributed. Thus to check if there is a significant difference between `Europe` and `Asia` with respect to `'Imports of goods and services (% of GDP)'` in the years after `1990`. We will be using [Wilcoxon Rank Sum test](https://rpkgs.datanovia.com/rstatix/reference/wilcox_test.html).
+
+```{r}
+wilcox <- function(year){
+ wilcoxs <- gapminder %>% 
+   filter(Year == year, continent == 'Asia' | continent == 'Europe') %>%
+   select(`Imports of goods and services (% of GDP)`, continent) %>% 
+   drop_na(`Imports of goods and services (% of GDP)`, continent) %>% 
+   wilcox_test(`Imports of goods and services (% of GDP)` ~ continent)
+ wilcoxs <- cbind(Year = year, wilcoxs,  
+               signif_p_val = wilcoxs$p < 0.05) %>% 
+   select(-.y.)
+}
+wilcoxs_rank <- lapply(years[years > 1990], wilcox)
+wilcoxs_rank <- as_tibble(do.call(rbind, wilcoxs_rank))
+wilcoxs_rank
+
+```
+
+As we can see in all the years after `1990` the `p` > `0.05`, this means that there is no significant difference between `Europe` and `Asia` with respect to `'Imports of goods and services (% of GDP)'` in the years after `1990`.
+
+### Q8: What is the country (or countries) that has the highest `'Population density (people per sq. km of land area)'` across all years? (i.e., which country has the highest average ranking in this category across each time point in the dataset?)
+
+```{r}
+gapminder %>% 
+  select(`Population density (people per sq. km of land area)`,
+         `Country Name`, `Year`) %>% 
+  drop_na() %>% 
+  group_by(`Year`) %>% 
+  mutate(avg_pop_rank = 
+          rank(desc(`Population density (people per sq. km of land area)`))) %>% 
+  ungroup(`Year`) %>% 
+  select(`Country Name`, avg_pop_rank) %>% 
+  group_by(`Country Name`) %>% 
+  mutate(avg_pop_rank =  mean(avg_pop_rank)) %>%  
+  ungroup(`Country Name`) %>% 
+  unique() %>% 
+  arrange(avg_pop_rank) %>% 
+  print(n = 5)
+  
+```
+
+As we can see `Macao SAR, China` and `Monaco` both with `avg_pop_rank` of `1.5` had the highest `'Population density (people per sq. km of land area)'` across `1962` to `2007`.
+
+### Q9: What country (or countries) has shown the greatest increase in 'Life expectancy at birth, total (years)' since 1962?
+
+```{r}
+
+gapminder %>% 
+  select(`Life expectancy at birth, total (years)`,
+         `Country Name`, `Year`) %>% 
+  drop_na() %>% 
+  group_by(`Country Name`) %>% 
+  filter(Year == 1962 | Year == 2007) %>% 
+  mutate(diff_life_expectancy = `Life expectancy at birth, total (years)` 
+         - lag( `Life expectancy at birth, total (years)`)) %>% 
+  select(`Country Name`, diff_life_expectancy) %>% 
+  drop_na() %>% 
+  arrange(-diff_life_expectancy) %>% 
+  print(n = 5)
+  
+```
+
+We can see that `Maldives` had the greatest increase in `'Life expectancy at birth, total (years)'` since `1962` with an increase of `36.916` from `1962` to `2007`.
