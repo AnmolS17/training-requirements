@@ -46,7 +46,8 @@
     4. Create a new keypair in AWS or use the existing `*.pem` key you have.    
     5. In your host PC -> go to terminal -> command: `ssh-keygen -y` (OpenSSH) -> select the public key -> copy it (It will be a *SSH RSA* key).    
     6. Go to the `sudouser` -> command: `nano authorized_keys` -> paste the key-> save and exit.     
-    7. Connect to the `sudouser` -> using terminal : command: `ssh -i "bioinf.pem" sudouser@ec2-xx-x-xxx-xxx.ap-south-1.compute.amazonaws.com`, or using MobaXterm  
+    7. Connect to the `sudouser` -> 
+	   using terminal : command: `ssh -i "bioinf.pem" sudouser@ec2-xx-x-xxx-xxx.ap-south-1.compute.amazonaws.com`, or using MobaXterm  
     *Reference:*   
     [2FA and SSH](https://aws.amazon.com/blogs/startups/securing-ssh-to-amazon-ec2-linux-hosts/) -> This consist of how how to manage the users,  
 	              i.e. the commands and steps used to add key-pair for the `sudouser`. This also consists of adding 2FA for your EC2 instance.    
@@ -57,7 +58,7 @@
 **Q8. What does the `sudo docker run` part of the command do? and what does the `salmon swim` part of the command do?**  
 
 *A8.* `sudo docker run`: `sudo` to provide the privilege to run the command as root user/ superuser;  
-     `docker run` command first creates a writable container layer over the specified image(here "combinelab/salmon") and then starts it using the specified command.  
+     `docker run` command first creates a writable container layer over the specified image(here `combinelab/salmon`) and then starts it using the specified command.  
      `salmon swim`: `salmon` is a program to produce highly-accurate, transcript-level quantification estimates from RNA-seq data.   
      `swim` command is used to perform a super-secret operation  
     
@@ -69,9 +70,11 @@
 **Q10. What is the output of `flask --version`?**  
 
 *A10.* The output of `flask --version`: 
-     ```Python 3.9.5
-        Flask 2.0.2
-        Werkzeug 2.0.2 ```  
+ ```
+     Python 3.9.5  
+     Flask 2.0.2  
+     Werkzeug 2.0.2  
+```  
 
 **Q11. What is the output of `mamba -V`?**  
 
