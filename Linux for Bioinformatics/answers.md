@@ -47,7 +47,6 @@ A7. By creating a `.ssh` directory in the `sudouser`. Then add a key-pair(privat
     5. In your host PC -> go to terminal -> command: `ssh-keygen -y` (OpenSSH) -> select the public key -> copy it (It will be a *SSH RSA* key).    
     6. Go to the `sudouser` -> command: `nano authorized_keys` -> paste the key-> save and exit.     
     7. Connect to the `sudouser` -> using terminal : command: `ssh -i "bioinf.pem" sudouser@ec2-xx-x-xxx-xxx.ap-south-1.compute.amazonaws.com`, or using MobaXterm  
-    
     Reference:   
    
     [2FA and SSH](https://aws.amazon.com/blogs/startups/securing-ssh-to-amazon-ec2-linux-hosts/) -> This consist of how how to manage the users,  
@@ -93,7 +92,8 @@ A13: command: `mamba deactivate` -> command: `which python` ->
 
 A14. Output of `salmon -h` in `salmonEnv` environment:  
 
-```salmon v1.4.0
+``` 
+salmon v1.4.0
 
 Usage:  salmon -h|--help or
         salmon -v|--version or
@@ -105,7 +105,8 @@ Commands:
      quant      : quantify a sample
      alevin     : single cell analysis
      swim       : perform super-secret operation
-     quantmerge : merge multiple quantifications into a single file```
+     quantmerge : merge multiple quantifications into a single file 
+```
 
 **Q15. What does the `-o athal.fa.gz` part of the command do?**   
 
