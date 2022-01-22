@@ -30,7 +30,6 @@ A5: I used `nano`. There are two methods to save:
 A6. After changing the user to `sudouser`, i.e., `sudouser@IPv4/DNS`(Have to change the username to `sudouser` in the `ssh` command) in the shell.    
      Output-> `sudouser@ec2-xx-x-xxx-xxx.ap-south-1.compute.amazonaws.com: Permission denied (publickey).` on terminal.  
               `Server refused our key   No supported authentication methods available (server sent: publickey)` using MobaXterm.   
- 
      Explanation: After checking the files in both the user directory by using `ls -alh`.  
 	 I came to know that user `ubuntu` user had `.ssh` directory, but `sudouser` didn't have the `.ssh` directory.  
 	 This meant that `sudouser` couldn't connect by using `ssh` because it didn't have the key pair(private key) to do so, this data exist in `.ssh`.   
@@ -39,7 +38,6 @@ A6. After changing the user to `sudouser`, i.e., `sudouser@IPv4/DNS`(Have to cha
 **Q7. What was the solution?**  
 
 A7. By creating a `.ssh` directory in the `sudouser`. Then add a key-pair(private key) to it.   
-
     Steps:    
     1. Connect using `ubuntu` username -> command: `su - sudouser`   
     2. command: `mkdir .ssh` -> command: `chmod 700 .ssh/`; i.e. create `.ssh` directory -> change its permissions.    
@@ -107,7 +105,7 @@ Commands:
      quant      : quantify a sample
      alevin     : single cell analysis
      swim       : perform super-secret operation
-     quantmerge : merge multiple quantifications into a single file ```
+     quantmerge : merge multiple quantifications into a single file```
 
 **Q15. What does the `-o athal.fa.gz` part of the command do?**   
 
