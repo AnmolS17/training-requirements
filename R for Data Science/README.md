@@ -1,6 +1,7 @@
 # R for Data Science
 
 Pre-requisites: [R Programming](https://github.com/Bioinformatics-Research-Network/training-requirements/tree/main/R%20Programming)
+Pre-requisite: [`R Programming/`](https://github.com/Bioinformatics-Research-Network/training-requirements/tree/main/R%20Programming)
 
 `R` is an excellent language for Data Science. Some might even argue that Data Science is what `R` is for! 
 
@@ -32,7 +33,7 @@ Complete the following analysis in `R` and generate an `RMarkdown` report to sho
 
 1. Read in the `gapminder_clean.csv` data as a `tibble` using `read_csv`.
 2. Filter the data to include only rows where `Year` is `1962` and then make a scatter plot comparing `'CO2 emissions (metric tons per capita)'` and `gdpPercap` for the filtered data. 
-3. On the filtered data, calculate the pearson correlation of `'CO2 emissions (metric tons per capita)'` and `gdpPercap`. What is the Pearson R value and associated p value?
+3. On the filtered data, calculate the correlation of `'CO2 emissions (metric tons per capita)'` and `gdpPercap`. What is the correlation and associated p value?
 4. On the unfiltered data, answer "In what year is the correlation between `'CO2 emissions (metric tons per capita)'` and `gdpPercap` the strongest?" Filter the dataset to that year for the next step...
 5. Using `plotly`, create an interactive scatter plot comparing `'CO2 emissions (metric tons per capita)'` and `gdpPercap`, where the point size is determined by `pop` (population) and the color is determined by the `continent`. You can easily convert any `ggplot` plot to a `plotly` plot using the `ggplotly()` command.
 
@@ -43,9 +44,9 @@ Now, without further guidance, use your `R` Data Science skills (and appropriate
 3. What is the country (or countries) that has the highest `'Population density (people per sq. km of land area)'` across all years? (i.e., which country has the highest average ranking in this category across each time point in the dataset?)
 4. What country (or countries) has shown the greatest increase in `'Life expectancy at birth, total (years)'` since 1962? 
 
-For each question, you should generate summary visualizations (preferrably interactive ones) that demonstrate your answer to each question. Additionally, the analysis must be user-friendly for a non-programmer and should intuitively convey the insights you uncovered. Use `markdown` to ensure that the text is organized, readable, and stylish. For an example an a well-done RMarkdown report see [this example](https://static-html-pages.s3-us-west-2.amazonaws.com/merck-project/RloopCorrelationSummary.html).  
+For each question, you should generate summary visualizations (preferrably interactive ones) that demonstrate your answer to each question. Additionally, the analysis must be user-friendly for a non-programmer and should intuitively convey the insights you uncovered. Use `markdown` to ensure that the text is organized and readable. 
 
-Once you are done, export your `RMarkdown` to an `.html` file. All code and the resulting report should be commited using `git` and pushed to your fork of the training repo on GitHub. Once you are finished, let Henry know and he will check your `.html` file on GitHub. 
+Once you are done, export your `RMarkdown` to an `.html` file and share it with Henry.
 
 ## Learning Resources
 
@@ -55,8 +56,4 @@ You can also learn most of these skills from the free book, [R for Data Science]
 
 Suggested by Roshan, Introduction to Data Science book [here](https://rafalab.github.io/dsbook/models.html).
 
-Flowchart for choosing statistical tests:
-
-![choosing-appropriate-statistics-test-flow-chart-1-638](https://user-images.githubusercontent.com/44813811/113900197-32035d00-9793-11eb-9e34-3908433e7bf0.jpg)
-
-[Source](https://image.slidesharecdn.com/choosingappropriatestatisticstestflowchart-171001164040/95/choosing-appropriate-statistics-test-flow-chart-1-638.jpg?cb=1506876046)
+![img](https://cdn.scribbr.com/wp-content/uploads//2020/01/flowchart-for-choosing-a-statistical-test.png)
