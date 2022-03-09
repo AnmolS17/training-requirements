@@ -100,11 +100,11 @@ multivariant <- gapminder %>%
 
 ```
 
-### Normality tests for the Year: `r year`
+### **Normality tests for the year: `r year`**
 
 <br>
 
-#### Shapiro-Wilk Univariate-Normality Test: 
+#### **Shapiro-Wilk Univariate-Normality Test:**
 ```{r,fig.height = 6, fig.width = 10}
 multivariant$univariateNormality %>% 
   kbl() %>% 
@@ -116,7 +116,7 @@ multivariant$univariateNormality %>%
 ```
 <br>
 
-#### Henze-Zirkler Multivariate-Normality Test:
+#### **Henze-Zirkler Multivariate-Normality Test:**
 ```{r,fig.height = 6, fig.width = 10}
 multivariant$multivariateNormality %>% 
   kbl() %>% 
@@ -148,9 +148,13 @@ spearman <- cor.test(correlation$`CO2 emissions (metric tons per capita)`,
 
 
 ```
-### Correlation test results for year:`r year` 
-#### The Pearson R-value is **``r round(pearson$estimate, digits = 4)``** and associated p-value is **``r sprintf("%.3e", pearson$p.value)``**.
-#### The Spearman's Rank correlation statistic is **``r round(spearman$estimate, digits = 4)``** and associated p-value is **`p-value < 2.2e-16`**.  
+### **Correlation test results for year: `r year`** 
+<br>
+
+#### **The Pearson R-value is ``r round(pearson$estimate, digits = 4)`` and associated p-value is ``r sprintf("%.3e", pearson$p.value)``.**
+<br>
+
+#### **The Spearman's Rank correlation rho value is ``r round(spearman$estimate, digits = 4)`` and associated p-value is `p-value < 2.2e-16`.**  
 
 <br>
 
@@ -186,7 +190,7 @@ correlation_df %>%
 
 year_high_corr = unlist(correlation_df[1,1])
 ```
-#### The correlation between 'CO2 emissions (metric tons per capita)', and 'gdpPercap' is the strongest in **`r year_high_corr`**.
+##### The correlation between 'CO2 emissions (metric tons per capita)', and 'gdpPercap' is the strongest in **`r year_high_corr`**.
 <br>
 ```{r}
 highest_corr <- gapminder %>%
@@ -331,7 +335,7 @@ dunns_test %>%
 
 
 ```
-#### As we can see from the table there is a **significant relationship** between many `continents`. 
+##### As we can see from the table there is a **significant relationship** between many `continents`. 
 * **Example**:  
     + **`Africa` and `Europe` in `1972`** 
     + **`Americas` and `Europe` in `1982`** 
