@@ -4,7 +4,7 @@ from database import Base
 
 class gapminder(Base):
     __tablename__ = "gapminder_tbl"
-    index = Column (Integer, primary_key=True)
+    index = Column(Integer, primary_key=True)
     country = Column(String)
     year = Column(Integer)
     agriculture = Column(Float)
