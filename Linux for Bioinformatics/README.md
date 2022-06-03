@@ -46,6 +46,8 @@ Please choose one of the following methods for connecting to your EC2 instance:
 
 You're in luck! Windows is actually the best OS for connecting to remote linux servers because of [MobaXTerm](https://mobaxterm.mobatek.net/). MobaXTerm has tabbed ssh sessions, a built-in SFTP panel, remote text editing, and so much more -- and it's free! [Here](https://www.devopshint.com/how-to-connect-to-aws-ec2-instance-using-mobaxterm/) is a very brief tutorial on how to connect to AWS EC2 using MobaXTerm. 
 
+**June 2022 note**: some users are experiencing an issue using their private key (.pem file) to log into their EC2 instance with MobaXTerm (Error message: "Server refused our key"). While this usually means you are using the wrong key or wrong username (see this troubleshooting guide: [link](https://aws.amazon.com/premiumsupport/knowledge-center/ec2-server-refused-our-key/)), it might still happen when you are using the correct key and username. In that case, [this solution](https://superuser.com/a/1679777/1239769) should fix the problem. It requires that you login using a command-line connection string like this: `ssh -i "your_key.pem" ubuntu@your_ec2_url.com` -- and then changing the settings in `/etc/ssh/sshd_config` using a text editor such as *vim* or *nano*. If you are still having issues after trying this, please contact Henry and he will assist you.
+
 #### PuTTY (ssh)
 
 PuTTY is a popular ssh client on Windows and you can find a tutorial for connecting to an AWS EC2 instance from PuTTY [here](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/putty.html). 
@@ -162,8 +164,6 @@ Version Info: This is the most recent version of salmon.
 ```shell
 sudo docker system prune -a
 ```
-sudo docker system prune
-```
 
 ## Set up a non-sudo user account
 
@@ -172,6 +172,8 @@ While `sudo` access is convenient for when you need to install / update software
 1. Create a new user account, `serveruser`, that has a strong and randomly-generated password, a home directory, and the ability to access the server.
 2. Successfully connect to the server using `serveruser`.
 3. Try running `sudo ls /root`, **Q9. What is the output of this command?**
+
+**Complete all the following steps with the `serveruser` account**.
 
 ## Miniconda
 
@@ -186,7 +188,7 @@ As `serveruser`, complete the following:
 
 ### Mamba
 
-Conda is effective at installing packages and system dependencies for them. However, it is relatively slow. To overcome this issue, a much faster version of `conda`, called `mamba`, has been developed. Install `mamba` now. **Hint**: you will probably need to specify the channel to install it from.
+Conda is effective at installing packages and system dependencies for them. However, it is relatively slow. To overcome this issue, a much faster version of `conda`, called [`mamba`](https://github.com/mamba-org/mamba), has been developed. Install `mamba` now. **Hint**: you will probably need to specify the [channel](https://docs.conda.io/projects/conda/en/latest/user-guide/concepts/channels.html) to install it from.
 
 **Q11. What is the output of `mamba -V`?**
 
@@ -213,15 +215,10 @@ conda deactivate
 5. **Q13. What is the output of `which python` now?**
 
 ### Installing `salmon`
-conda install -c bioconda salmon
-```
-\*This may produce an error for some users. If it does, try using your google skills and see if you can solve it. A good idea is to google the name of the tool + the content of the error message. You can also visit the GitHub page for the tool and search in the "Issues" section. If you can't find the solution after 30 minutes, ask Henry and he will help you. 
-5. Read the `conda install` reference ([here](https://docs.conda.io/projects/conda/en/latest/commands/install.html)). In the previous command, **Q9. what does `-c bioconda` do?**
-6. Confirm this worked by running `salmon swim`. 
 
 Use what you've learned in the previous steps to set up your environment for RNA-Seq analysis with `salmon`.
 
-1. Using `mamba`, install `salmon` version `1.4.0` into a new environment called `salmonEnv` **Hint**: you will need both the `bioconda` and `conda-forge` channels.
+1. Using `mamba`, install `salmon` version `1.4.0` into a new environment called `salmonEnv` **Hint**: you will need both the `bioconda` and `conda-forge` channels. **Hint 2**: check out the documentation [here](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-pkgs.html#installing-packages) to see how to specify a particular version of a package (just replace `conda` with `mamba` when you run it yourself).
 2. Activate `salmonEnv`.
 3. **Q14. What is the output of `salmon -h`?**
 
@@ -229,14 +226,16 @@ Use what you've learned in the previous steps to set up your environment for RNA
 
 ### Part 1: Generating the transcriptome index
 
-RNA-Sequencing is a technique used for measuring RNA species under various conditions. The most common application for this technology is differential gene expression (DGE), which answers the question "how does gene expression change under different conditions?". To perform DGE analysis, we first need a read count matrix, which is generated by quantifying RNA-Seq reads against a transcriptome. `salmon` is a very low-overhead CLI program for generating a read count matrix (which is important because you're currently on a machine with only 1 core and 1 GB of RAM!)
+RNA-Sequencing is a technique used for measuring RNA under various conditions. The most common application for this technology is differential gene expression (DGE), which answers the question "how does gene expression change under different conditions?". To perform DGE analysis, we first need a read count matrix, which is generated by quantifying RNA-Seq reads against a transcriptome. `salmon` is a very low-overhead CLI program for generating a read count matrix (which is important because you're currently on a machine with only 1 core and 1 GB of RAM!)
 
-To generate a gene count matrix, do the following:
+Before you can generate a read count matrix, you will need (1) a transcriptome index and (2) some RNA-Seq data to quantify against that index. We will start with (1) by buidling a transcriptome index for the Thale Cress plant, *Arabidopsis thaliana*.
 
-1. Download the transcriptome for *arabidopsis thaliana*, the "thale cress". **Q15. What does the `-o athal.fa.gz` part of the command do?**  **Q16. What is a `.gz` file?**
+1. Download the full transcriptome for *Arabidopsis thaliana*. **Q15. What does the `-o athal.fa.gz` part of the command do?**  **Q16. What is a `.gz` file?**
+
 ```shell
 curl ftp://ftp.ensemblgenomes.org/pub/plants/release-28/fasta/arabidopsis_thaliana/cdna/Arabidopsis_thaliana.TAIR10.28.cdna.all.fa.gz -o athal.fa.gz
 ```
+
 2. Examine this file using `zcat` and `head`:
 
 ```shell
@@ -250,33 +249,22 @@ Then, answer:
 - **Q20. What is `|` doing?** -- **Hint** using `|` in Linux is called "piping"  
 - **Q21. What is a `.fa` file? What is this file format used for?**
 
-3. Build the `salmon` indices for the downloaded transcriptome. You can find the docs with detailed instructions ([here](https://web.archive.org/web/20210118043821/https://salmon.readthedocs.io/en/latest/salmon.html#preparing-transcriptome-indices-mapping-based-mode)). **Note**: The index should take ~ 4-5 minutes to build and you do NOT need `decoys.txt`, so leave that part out. Adding extra arguments may also cause your machine to run out of memory -- use only the arguments in the tutorial (minus the `decoys.txt` part).
+3. Index the *Arabidopsis thaliana* transcriptome using `salmon`. You can find the `salmon` docs with detailed instructions for building transcriptome indices ([here](https://web.archive.org/web/20210118043821/https://salmon.readthedocs.io/en/latest/salmon.html#preparing-transcriptome-indices-mapping-based-mode)). **Note**: The index should take ~ 4-5 minutes to build and you do NOT need `decoys.txt`, so leave that part out. Adding extra arguments may also cause your machine to run out of memory -- use only the arguments in the tutorial (minus the `decoys.txt` part). **Note**: You should not need more than 450MB to build this index (last tested on Ubuntu 22.04 LTS and 20.04 LTS in June 2022). If you find that you are running out of memory (or storage), please double check your index command to ensure it uses the correct file with the `-t` flag. If you still find issues during this step, contact Henry and he will assist you.
 
 ### Part 2: Quantify RNA-Seq data
 
-RNA-Seq data is commonly stored in the Sequencing Read Archive (SRA), a public database hosted by the NCBI. While Gene Expression Omnibus (GEO) is used to access processed datasets, SRA is where the raw sequencing reads can be found. NCBI provides a series of computational tools that can be used to download these data and convert them into the correct format for analysis. 
+Now that we have build the transcriptome index for *arabidopsis thaliana*, we can download some RNA-Seq data and quantify it!
+
+Publicly-available RNA-Seq data is typically stored in the Sequence Read Archive (SRA), a public database hosted by the U.S. NIH/NCBI. While the Gene Expression Omnibus (GEO) is used to access processed datasets, the SRA is where raw sequencing reads can be found. NCBI provides a series of computational tools for downloading these data and converting them into the correct format for analysis. 
 
 1. Install `sra-tools` in your `salmonEnv` environment using `mamba`. 
-2. Download the RNA-Seq sample "SRR074122" using `prefetch` (part of the SRA tools). The documentation is [here](https://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?view=toolkit_doc&f=prefetch). **Q22. What format are the downloaded sequencing reads in?** (If this step produces an error, provide the error message in Q22 and then you can also try downloading the file directly from [here](https://sra-pub-run-odp.s3.amazonaws.com/sra/SRR074122/SRR074122) -- note that you can use this file with the succeeding steps.)
+2. Download the RNA-Seq sample "SRR074122" using `prefetch` (part of the SRA tools). The documentation for `prefetch` can be found [here](https://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?view=toolkit_doc&f=prefetch). **Q22. What format are the downloaded sequencing reads in?** (If this step produces an error, provide the error message in your answer to **Q22** and then you can also try downloading the file directly from [here](https://sra-pub-run-odp.s3.amazonaws.com/sra/SRR074122/SRR074122) -- note that you can use this file with the succeeding steps.)
 3. Disk (storage) space is a concern when working with large sequencing files. Check your remaining disk space with the `df -h` command. The remaining space will be listed under `/dev/root`. **Q23. What is the total size of the disk?**, **Q24. How much space is remaining on the disk?**
-4. Convert the reads to `fastq` format using `fastq-dump SRR074122`. This should produce an error. Considering the previous question and answer: **Q25. What went wrong?** (if you didn't encounter any errors, let Henry know and continue...)
+4. Convert the reads to `fastq` format using this command: `fastq-dump SRR074122`. This should produce an error. Considering the previous question, answer **Q25. What went wrong?** (if you didn't encounter any errors, let Henry know and continue onward.)
 5. Delete the partially-generated `.fastq` file. Then, modify the previous `fastq-dump SRR074122` command so that the issue in **Q25** no longer occurs. The documentation for `fastq-dump` is [here](https://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?view=toolkit_doc&f=fastq-dump). **Q26: What was your solution?** **Hint**: consider **Q16**. 
-6. Once you have successfully converted your reads, use `salmon` to quantify them (using "mapping-based mode"). Set the output folder name as `transcripts_quant/`. **Note** These reads are single-end.
+6. Once you have successfully converted your reads, use `salmon` to quantify them (using "mapping-based mode"). Set the output folder name as `transcripts_quant/`. Use the transcriptome index for *Arabidopsis thaliana* which you built in the [previous section](#part-1-generating-the-transcriptome-index). **Note** These reads are single-end, so make sure you are using the appropriate command for single-ended reads. **Note 2**: You should not need more than 610MB of RAM for this step (last tested on Ubuntu 22.04 LTS and 20.04 LTS in June 2022). If you find that you are using more than that, please re-check the index command you used in the previous section. If you still find issues during this step, contact Henry and he will assist you.
 
 ## Wrap-up
 
 To complete the project, commit and push your `answers.md` to your fork. Then, let Henry know (and send him the link to your fork and anything required to access your AWS server as `serveruser`). He will access the server, check your configuration and your `quant.sf` file -- and will certify completion of the miniproject if everything is correct.
-1. Install `sra-tools` using `conda`. 
-2. Download the RNA-Seq sample "SRR074122" using `prefetch` (part of the SRA tools). The documentation is [here](https://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?view=toolkit_doc&f=prefetch). **Q16. What format are the downloaded sequencing reads in?**
-3. Disk (storage) space is a concern when working with large sequencing files. Check your remaining disk space with the `df -h` command. The remaining space will be listed under `/dev/root`. **Q17. What is the total size of the disk?**, **Q18. How much space is remaining on the disk?**
-4. Convert the reads to `fastq` format using `fastq-dump SRR074122`. This should produce an error. Considering the previous question and answer: **Q19. What went wrong?** (if you didn't encounter any errors, let Henry know...)
-5. Delete the partially-generated `.fastq` file. Then, modify the previous `fastq-dump SRR074122` command so that the issue in **Q19** no longer occurs. The documentation for `fastq-dump` is [here](https://ncbi.github.io/sra-tools/fastq-dump.html). **Q20: What was your solution?** **Hint**: consider **Q11**. 
-6. Once you have successfully converted your reads, use `salmon` to quantify them. Set the output folder name as `transcripts_quant/`. **Note** These reads are single-end.
-
-## Wrap-up
-
-To complete the project, send Henry your `answers.md` file along with anything required to access your AWS server as `serveruser`. He will access the server, check your configuration and your `quant.sf` file -- and will certify completion of the miniproject if everything is correct.
-
-
-
 
