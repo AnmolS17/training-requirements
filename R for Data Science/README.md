@@ -7,7 +7,7 @@ Pre-requisite: [`R Programming/`](https://github.com/Bioinformatics-Research-Net
 In this miniproject, your task is to analyze the `gapminder_clean.csv` dataset using `R` and the `tidyverse`. Wherever possible, your code should use `tidyverse` functions. For example:
 
 Instead of this:
-```
+```R
 my_data <- my_data[which(my_data$col1 == 10 | my_data$col2 == "Yes"),]
 my_data$new_col <- 10*my_data$col1
 png("my_plot.png")
@@ -16,7 +16,7 @@ title("some title")
 dev.off()
 ```
 Do this:
-```
+```R
 my_data %>%
     filter(col1 == 10 | col2 == "Yes") %>%
     mutate(new_col = 10*col1) %>%
@@ -34,7 +34,7 @@ Complete the following analysis in `R` and generate an `RMarkdown` report to sho
 4. On the unfiltered data, answer "In what year is the correlation between `'CO2 emissions (metric tons per capita)'` and `gdpPercap` the strongest?" Filter the dataset to that year for the next step...
 5. Using `plotly`, create an interactive scatter plot comparing `'CO2 emissions (metric tons per capita)'` and `gdpPercap`, where the point size is determined by `pop` (population) and the color is determined by the `continent`. You can easily convert any `ggplot` plot to a `plotly` plot using the `ggplotly()` command.
 
-Now, without further guidance, use your `R` Data Science skills (and appropriate statistical tests) to answer the following:
+Now, without further guidance, use your `R` Data Science skills (and appropriate statistical tests) to answer the following (*use the unfiltered dataset*):
 
 1. What is the relationship between `continent` and `'Energy use (kg of oil equivalent per capita)'`? (stats test needed)
 2. Is there a significant difference between Europe and Asia with respect to `'Imports of goods and services (% of GDP)'` in the years after 1990? (stats test needed)
