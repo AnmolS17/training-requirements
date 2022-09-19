@@ -1,5 +1,5 @@
 #mr tic tac toe
-mrttt<-c("       XXXXXXXXXXXXXXXXXXXXXX", "    XXXXXXXXXXXXXXXXXXXXXXXXXXXXX", 
+mrttt <- c("       XXXXXXXXXXXXXXXXXXXXXX", "    XXXXXXXXXXXXXXXXXXXXXXXXXXXXX", 
          "  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", " XXXXXXXXXXXXXXXXXX         XXXXXXXX", 
          "XXXXXXXXXXXXXXXX              XXXXXXX", "XXXXXXXXXXXXX                   XXXXX", 
          " XXX     _________ _________     XXX      ", "  XX    I  _xxxxx I xxxxx_  I    XX        ", 
@@ -13,7 +13,7 @@ mrttt<-c("       XXXXXXXXXXXXXXXXXXXXXX", "    XXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
          "          |  \\_________/  |")
 
 # values of board and function to print the board
-bval<-c(1,2,3,4,5,6,7,8,9)
+bval <- c(1,2,3,4,5,6,7,8,9)
 
 board <- function(){
   cat("\n       |       |\n")
@@ -40,7 +40,7 @@ input_value <- function(string){
 }
 
 #make the menu input name and X/O choice give the other choice to cpu
-menus<- function(){
+menus <- function(){
   i <- 0
   cat(mrttt, sep = "\n")
   cat("WELCOME PLAYER!!! I am Mr. Tic Tac Toe \nShall we play some TIC TAC TOE? \n")
@@ -54,14 +54,14 @@ menus<- function(){
       human <- "X"
       cpu <- "O"
       i <- 1
-    }else if(xno == "O") {
+    }else if (xno == "O") {
       human <- "O"
       cpu <- "X"
       i <- 1
     }
       
   }
-  return(list(playername=playername, human=human,cpu= cpu))
+  return(list(playername = playername, human = human, cpu = cpu))
 }
 menu_val <- menus()
 playername <- menu_val$playername
@@ -81,10 +81,10 @@ marking <- function(){
                       FALSE
                     })
      
-      if(move == FALSE| is.na(move)) {
+      if(move == FALSE | is.na(move)) {
         cat("\nWrong Input!!! Try Again \n")
-      }else if(is.numeric(move)) {
-        if (move >= 1 & move <10) {
+      }else if (is.numeric(move)) {
+        if (move >= 1 & move < 10) {
           if (bval[move] != 'X' & bval[move] != 'O') {
             bval[move] <<- human
             j <- 1
@@ -106,15 +106,15 @@ checkwin <- function(){
   hc <- c(human, cpu)
   win <- FALSE
   winner <- ''
-  for (seq in wld){
-    for (play in hc){
+  for (seq in wld) {
+    for (play in hc) {
       x <- 0
-      for (block in seq){
-        if (bval[block] == play){
+      for (block in seq) {
+        if (bval[block] == play) {
           x <- x + 1
         } else next
       }
-      if (x == 3){ 
+      if (x == 3) { 
         win <- T
         winner <- play
         return(c(win, winner))
@@ -130,35 +130,35 @@ checkwin <- function(){
 
 #checks if human or cpu can win in the next move,
 #returns the positions to play for cpu in such condition. 
-cpucheckh<- function(){
+cpucheckh <- function(){
   check<-rbind(c(1,2,3),c(4,5,6),c(7,8,9),c(1,4,7),
                c(2,5,8),c(3,6,9),c(1,5,9),c(7,5,3))
-  ck<-rbind(c(8,3,4),c(1,5,9),c(6,7,2),c(8,1,6),
+  ck <- rbind(c(8,3,4),c(1,5,9),c(6,7,2),c(8,1,6),
             c(3,5,7),c(4,9,2),c(8,5,2),c(6,5,4))
   hs <- 0
   for (x in 1:8) {
     h <- 0
     kh <- 0
     for (y in 1:3) {
-      if (bval[check[x,y]] == human){
+      if (bval[check[x,y]] == human) {
         h <- h + 1
         kh <- ck[x,y] + kh
-      }else if (bval[check[x,y]] ==  cpu){
+      }else if (bval[check[x,y]] ==  cpu) {
         h <- 0
         break
       }else next
     }
     if (h == 2){
-      hs<- 15 - kh
+      hs <- 15 - kh
       return(c(h,hs))
     }else next
   }
     return (c(0,0))
 }
-cpucheckc<- function(){
-  check<-rbind(c(1,2,3),c(4,5,6),c(7,8,9),
+cpucheckc <- function(){
+  check <- rbind(c(1,2,3),c(4,5,6),c(7,8,9),
                c(1,4,7),c(2,5,8),c(3,6,9),c(1,5,9),c(7,5,3))
-  ck<-rbind(c(8,3,4),c(1,5,9),c(6,7,2),c(8,1,6),
+  ck <- rbind(c(8,3,4),c(1,5,9),c(6,7,2),c(8,1,6),
             c(3,5,7),c(4,9,2),c(8,5,2),c(6,5,4))
   cs <- 0
   for (x in 1:8) {
@@ -188,7 +188,7 @@ cpumarking <- function(term,a,b) {
   cp <- cpucheckc()
   if (cp[1] == 2) {
     index <- which(indexs == cp[2])[[1]]
-    if (bval[index] != human & bval[index] != cpu){
+    if (bval[index] != human & bval[index] != cpu) {
       bval[index] <<- cpu
       board()
       return(c(a,b)) 
@@ -210,7 +210,7 @@ cpumarking <- function(term,a,b) {
     c <- cpu3(a)
     a <- c[1]
     b <- c[2]
-  }else if (term == 4 | term == 6){
+  }else if (term == 4 | term == 6) {
     c <- cpu46(a)
     a <- c[1]
     b <- c[2]
@@ -252,8 +252,8 @@ cpu2 <- function(){
   }
 }
 
-cpu3<- function(a){
-  arr<-rbind(c(7,3),c(9,1),c(1,9),c(7,3))
+cpu3 <- function(a){
+  arr <- rbind(c(7,3),c(9,1),c(1,9),c(7,3))
   for (b in 1:2) {
     if (bval[arr[a,b]] != human & bval[arr[a,b]] != cpu) {
       bval[arr[a,b]] <<- cpu
@@ -268,15 +268,15 @@ cpu46 <- function(a){
   if (bval[5] == cpu) {
     for (c in 1:4) {
       for (b in 1:2) {
-        if (bval[arr[c,b]] != human & bval[arr[c,b]] != cpu){
+        if (bval[arr[c,b]] != human & bval[arr[c,b]] != cpu) {
           bval[arr[c,b]] <<- cpu
           return(c(c,b)) 
         }else next
       }
     }
   }else{
-    for (b in 1:2){
-      if (bval[arr[a,b]] != human & bval[arr[a,b]] != cpu){
+    for (b in 1:2) {
+      if (bval[arr[a,b]] != human & bval[arr[a,b]] != cpu) {
         bval[arr[a,b]] <<- cpu
         return(c(a,b))
       }else next
@@ -288,7 +288,7 @@ cpu46 <- function(a){
   
 cpu5 <- function(a){
   arr <- c(9,7,3,1)
-  if (bval[arr[a]] != human & bval[arr[a]] != cpu){
+  if (bval[arr[a]] != human & bval[arr[a]] != cpu) {
     bval[arr[a]] <<- cpu
     return(a)
   }else {
@@ -301,7 +301,7 @@ cpu5 <- function(a){
 
 cpu7 <- function(a,b){
   arr <- rbind(c(4,2),c(6,2),c(4,8),c(8,6))
-  if (bval[5] != human & bval[5] != cpu){
+  if (bval[5] != human & bval[5] != cpu) {
     bval[5] <<- cpu
     return(c(a,b))
   }else if (bval[arr[a,b]] != human & bval[arr[a,b]] != cpu) {
@@ -316,7 +316,7 @@ cpu7 <- function(a,b){
 # a function to mark randomly if the conditions are not fav for cpu
 cpurand <- function(){
   arr <- sample(1:9, 9, replace = FALSE)
-  for(x in arr) {
+  for (x in arr) {
     if (bval[x] != human & bval[x] != cpu) {
       bval[x] <<- cpu
       return(c(1,1))
@@ -331,9 +331,9 @@ for (i in 1:9) {
   win <- checkwin()
   if (win[1]) {
     break
-  }else if (human == 'X' & i%%2 != 0) {
+  }else if (human == 'X' & i %% 2 != 0) {
     marking()
-  }else if (human == 'O' & i%%2 == 0) {
+  }else if (human == 'O' & i %% 2 == 0) {
     marking()
   }else{
     ci <- cpumarking(i,ai,bi)
@@ -348,7 +348,7 @@ if (win[1]) {
 if (win[2] == human) {
   board()
   cat(paste("This time you won ", playername ,", you won't be lucky next time."))
-}else if(win[2] == cpu) {
+}else if (win[2] == cpu) {
   board()
   cat("Know your place human, I am a superior being.")
 }
